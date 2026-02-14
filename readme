@@ -1,0 +1,56 @@
+Documentação — Projeto “Descarga Inteligente para Mictórios”
+
+1. Contexto e problema
+
+Nos banheiros da faculdade, os sensores atuais dos mictórios disparam a descarga indevidamente, mesmo quando o usuário está distante. Isso causa acionamentos repetidos e desperdício significativo de água.
+
+2. Proposta
+
+Projetar uma solução que combine software (lógica de decisão) e hardware (sensoriamento + acionamento) para tornar o acionamento da descarga mais preciso, reduzindo falsos positivos e garantindo boa experiência de uso.
+
+3. Objetivo geral
+
+Criar um sistema que:
+ |_ Detecte presença/uso de forma confiável;
+ |_ Não acione por aproximações rápidas ou por pessoas passando ao lado;
+ |_ Acione a descarga apenas após um evento de uso válido (ex.: presença sustentada + saída);
+ |_ Registre métricas (quantas detecções, quantos acionamentos, falsos positivos estimados).
+
+4. Escopo (versão inicial)
+
+Inclui:
+ |_ Lógica de controle (algoritmo) com regras anti-falso-positivo;
+ |_ Simulador para testes sem hardware;
+ |_ Diagrama de arquitetura e estados (Mermaid).
+
+Não inclui (por enquanto):
+ |_ Escolha final de sensores/placa/solenoide;
+ |_ Instalação elétrica/hidráulica;
+ |_ App mobile ou dashboard completo.
+
+5. Requisitos funcionais (primeira versão)
+
+RF01: Detectar “presença próxima” e “presença sustentada”.
+RF02: Confirmar “evento de uso” por presença por tempo mínimo.
+RF03: Acionar descarga após a saída do usuário, com atraso configurável.
+RF04: Bloquear múltiplos acionamentos em sequência (cooldown).
+RF05: Permitir calibrar parâmetros (tempos, limiares, cooldown).
+
+6. Requisitos não funcionais
+
+RNF01: Baixa taxa de falsos positivos.
+RNF02: Lógica simples e portável para microcontrolador.
+RNF03: Testável sem hardware (simulação).
+RNF04: Fácil manutenção e calibração.
+
+7. Estratégia de solução (ideia central)
+
+Usar uma máquina de estados com temporizações:
+
+IDLE (ninguém) → PRESENCE_DETECTED (alguém apareceu)
+
+se presença durar o mínimo: IN_USE
+
+quando a presença some: WAIT_TO_FLUSH → aciona descarga → COOLDOWN → IDLE
+
+Essa abordagem evita descargas por “passantes” e reduz disparos por ruído.
